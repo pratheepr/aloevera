@@ -9,6 +9,7 @@ import BaseApiUrl from '../../components/apis/aloeveracalls';
 import PopUp from '../../components/popup/popup';
 import SearchBox from '../../components/search-box/search-box.component';
 
+import { auth } from '../../firebase/firebase.utils'; 
 
 import './insert-sql.styles.scss';
 import './insert-sql-file-upload.styles.css';
@@ -24,7 +25,8 @@ class InsertSql extends React.Component {
             options: [],
             sqlOwnerName:'',
             sqlName:'',
-            PopUpSeen: false
+            PopUpSeen: false,
+            loggedInUser:''
  
         };
 
@@ -161,8 +163,30 @@ class InsertSql extends React.Component {
     componentWillMount() {
 
         this.handleMetadata('sqlarea');
-        console.log('inside insert compe');
+        console.log('inside insert component'); 
+        this.getAuthStatus();
+        console.log('Print Logged in');
+        console.log( this.state.loggedInUser); 
     }
+
+    getAuthStatus = async () => {
+        await auth.onAuthStateChanged((resp) => {
+    
+            // Pass response to a call back func to update state
+            console.log(resp);
+            //console.log(resp.displayName);
+
+            this.updateUserState(resp);
+        });
+      }
+    
+      // update state
+      updateUserState = (resp) => {
+         this.setState({
+            loggedInUser: resp.email
+         })
+      }
+    
   
     render()
     {
@@ -237,6 +261,7 @@ class InsertSql extends React.Component {
                         label='Owner Name'
                         rows='1'
                         required
+                        placeholder = {this.state.loggedInUser}
                     />
 
                     <div className='buttons'>
