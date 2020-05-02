@@ -1,22 +1,32 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import { auth } from '../../firebase/firebase.utils'; 
+
 import './header.styles.scss';
 
-const Header = () => (
+const Header = ( {currentUser } ) => (
   <div className='header'>
       <div className='options'>
         <Link className='option' to='/'>
-          <h3>Home</h3>
+          Home
         </Link>
 
         <Link className='option' to='/insertsql'>
-        <h3>Insert Sql</h3>
+        Insert Sql
         </Link>
 
         <Link className='option' to='/selectsql'>
-            <h3>Select Sql</h3>
+            Select Sql
         </Link>
+        {
+          currentUser ?
+          <div className='option' onClick={() => auth.signOut()}> Sign Out</div>
+          :
+          <Link className='option' to='/signin'>
+            Sign In
+          </Link>
+        }
       </div>
   </div>
 );
