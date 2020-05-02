@@ -1,6 +1,6 @@
 import React from 'react';
 
-import FormInput from '../form-input/form-input.component';
+import FormInputBox from '../form-input-box/form-input-box.component';
 import CustomButton from '../custom-button/custom-button.component';
 
 import { auth, createUserProfileDocument } from '../../firebase/firebase.utils'; 
@@ -62,7 +62,7 @@ class Signup extends React.Component {
                 <span>Sign up with your email and password</span>
                 <form className='sign-up-form' onSubmit={this.handleSubmit}>
 
-                    <FormInput
+                    <FormInputBox
                         type='text' 
                         name='displayName'
                         value={displayName}
@@ -71,7 +71,7 @@ class Signup extends React.Component {
                         required
                     />
 
-                    <FormInput
+                    <FormInputBox
                         type='email' 
                         name='email'
                         value={email}
@@ -80,7 +80,7 @@ class Signup extends React.Component {
                         required
                     /> 
 
-                    <FormInput
+                    <FormInputBox
                         type='password' 
                         name='password'
                         value={password}
@@ -89,7 +89,7 @@ class Signup extends React.Component {
                         required
                     /> 
 
-                    <FormInput
+                    <FormInputBox
                         type='password' 
                         name='confirmPassword'
                         value={confirmPassword}
