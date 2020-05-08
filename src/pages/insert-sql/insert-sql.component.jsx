@@ -181,8 +181,8 @@ class InsertSql extends React.Component {
       }
     
       // update state
-      updateUserState = (resp) => {
-         this.setState({
+      updateUserState = (resp) =>   {       
+          this.setState({
             loggedInUser: resp.email
          })
       }

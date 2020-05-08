@@ -16,10 +16,11 @@ class SearchBox extends React.Component {
     }
 
     
-
     componentDidMount() {
          this.setState( {sboxOptions: this.props.sboxOptions}) ; 
          this.setState( {selectedValue:null}) ;
+         console.log('INSIDE SEARCHBOX COMPS MOUNT *** ***');
+         console.log( this.state.sboxOptions) ;
 
     }
 
@@ -35,7 +36,6 @@ class SearchBox extends React.Component {
 
         this.props.sboxHandleChange= this.state.selectedValue;
     }
-
 
 
 render() {

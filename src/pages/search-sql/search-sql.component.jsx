@@ -26,9 +26,11 @@ class SearchSql extends React.Component {
             areaOptions: [],
             schemaOptions: [],
             authorOptions: [] ,
+            tableOptions: [] , 
             selectedArea: [] ,
             selectedSchema: [] ,
-            selectedAuthor: []
+            selectedAuthor: [] ,
+            selectedTables: [] 
         }
     }
 
@@ -62,6 +64,7 @@ class SearchSql extends React.Component {
             case 'sqlarea'  :  this.setState( {selectedArea: searchValues} ); break; 
             case 'sqlschema':  this.setState( {selectedSchema: searchValues} ); break; 
             case 'sqlowner' :  this.setState( {selectedAuthor: searchValues} ); break;
+            case 'sqltables':  this.setState( {selectedTables: searchValues} ); break;
             default: 
         }
         console.log( this.state ) ;
@@ -73,6 +76,28 @@ class SearchSql extends React.Component {
         this.setState( { dbSqls: response.data.sqls} ) ;
       }
 
+    GetAllTables = async event => {
+
+        console.log('INSIDE ALL TABLES');
+
+        const response = await BaseApiUrl.get('/aloeverametadata/tables'); 
+
+        const tmp_all_tables = response.data.aloevera_tables.map( (tableName) => ({
+                                                                                name: tableName.table_name ,
+                                                                                  id: tableName.id ,
+                                                                               value: tableName.table_name ,
+                                                                               label: tableName.table_name ,
+                                                                           groupName: 'sqltables'
+                                                                            }));
+        
+        if ( tmp_all_tables.length > 0 ) {
+            this.setState( {tableOptions: tmp_all_tables})
+        }
+
+        console.log('PRINT ALL TABLES')
+        console.log(tmp_all_tables);
+    }
+    
     handleMetadata = async (groupName) => {
         
         console.log(groupName) ;
@@ -113,7 +138,7 @@ class SearchSql extends React.Component {
     handleSearchSubmit = event => {
         console.log('Inside Search Submit') ;
 
-        const tmp_array = [ ...this.state.selectedArea, ...this.state.selectedSchema, ...this.state.selectedAuthor] ;
+        const tmp_array = [ ...this.state.selectedArea, ...this.state.selectedSchema, ...this.state.selectedAuthor, ...this.state.selectedTables] ;
         //console.log(tmp_array); 
 
         const tmp = tmp_array.map ( searchTerm => 
@@ -159,16 +184,23 @@ class SearchSql extends React.Component {
         console.log ( this.state);
     }
 
+    handleSearchCancel = event => {
+        console.log('inside handle cancel') 
+        const newPageUrl = '/selectsql' 
+        window.open(newPageUrl, "_blank") 
+    }
+
     componentDidMount() {
         
-        this.handleMetadata('');
-        this.GetAllData();
+        this.handleMetadata('');         
+        this.GetAllData(); 
+        this.GetAllTables() ; 
 
       }
 
     render() {
 
-        const { sqlSearchValue, dbSqls , areaOptions, schemaOptions , authorOptions } = this.state ; 
+        const { sqlSearchValue, dbSqls , areaOptions, schemaOptions , authorOptions, tableOptions } = this.state ; 
 
         console.log( 'dbsqls is (from parent):'  ) ;
         console.log (dbSqls) ;
@@ -191,23 +223,28 @@ class SearchSql extends React.Component {
                        </div> 
                        <div className='search-box-form'>
                             <div className='grid-search-box'>
-                                    <br /><br />
+                                    <br />
                                     {
-                                        areaOptions.length > 0 
-                                        ? 
+                                        areaOptions.length > 0   && tableOptions.length > 0   ? 
                                         <div>
                                             <SearchBox 
                                                 sboxOptions={areaOptions} 
                                                 sboxHandleChange={this.handleSearchBoxChange} 
                                                 searchLabel={'Select Business Area'}
                                             />
-                                            <br /> <br /> <br />
+                                            <br /> 
                                             <SearchBox 
                                                 sboxOptions={schemaOptions} 
                                                 sboxHandleChange={this.handleSearchBoxChange} 
                                                 searchLabel={'Select Schema'}
                                             />
-                                            <br /> <br /> <br />
+                                            <br /> 
+                                            <SearchBox 
+                                                sboxOptions={tableOptions} 
+                                                sboxHandleChange={this.handleSearchBoxChange}
+                                                searchLabel={'Select Tables'} 
+                                            />
+                                            <br /> 
                                             <SearchBox 
                                                 sboxOptions={authorOptions} 
                                                 sboxHandleChange={this.handleSearchBoxChange}
@@ -215,9 +252,7 @@ class SearchSql extends React.Component {
                                             />
                                         </div> 
                                     : null 
-                                    }
-                                    <br /> <br /> <br />
-                                    <br /> <br /> <br />
+                                    }                            
                                     <div className='buttons'>
                                         <CustomButton onClick= {this.handleSearchSubmit}>Submit</CustomButton>
                                         <br />
